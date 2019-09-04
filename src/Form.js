@@ -82,6 +82,7 @@ function Form({
               onChange={handleChange}
               onBlur={handleBlur}
               name="age"
+              min="0"
               required
             />
             {touched.age && errors.age}

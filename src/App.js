@@ -34,7 +34,7 @@ const emailValidation = email => {
 };
 
 const ageValidation = age => {
-  if (age === '') {
+  if (!age) {
     return 'Age is required';
   }
   if (age < 18) {
@@ -53,11 +53,11 @@ const validate = {
   age: ageValidation,
 };
 
-const formValues = {
-  age: 0,
-  email: '',
-  firstName: '',
-  lastName: '',
+const initialValues = {
+  age: 10,
+  email: 'no@email',
+  firstName: 'Mary',
+  lastName: 'Jane',
 };
 
 function App() {
@@ -84,11 +84,15 @@ function App() {
         </div>
         <Route
           path="/form-vanilla"
-          render={() => <FormVanilla validate={validate} values={formValues} />}
+          render={() => (
+            <FormVanilla validate={validate} initialValues={initialValues} />
+          )}
         />
         <Route
           path="/form-formik"
-          render={() => <FormFormik validate={validate} values={formValues} />}
+          render={() => (
+            <FormFormik validate={validate} initialValues={initialValues} />
+          )}
         />
       </Router>
     </div>
