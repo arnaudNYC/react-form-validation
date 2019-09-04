@@ -1,10 +1,10 @@
 import React from 'react';
 
 function Form({
+  errors,
   handleBlur,
   handleChange,
   handleSubmit,
-  errors,
   touched,
   values,
 }) {
@@ -18,7 +18,7 @@ function Form({
           <li>Age must be between 18 and 99</li>
         </ul>
       </div>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} autoComplete="off">
         <div className="form-group">
           <label htmlFor="first-name-input">
             First Name *

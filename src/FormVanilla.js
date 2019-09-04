@@ -2,82 +2,12 @@ import React from 'react';
 import Form from './Form';
 import Debug from './Debug';
 
-const nameValidation = (fieldName, fieldValue) => {
-  if (fieldValue.trim() === '') {
-    return `${fieldName} is required`;
-  }
-  if (/[^a-zA-Z -]/.test(fieldValue)) {
-    return 'Invalid characters';
-  }
-  if (fieldValue.length < 3) {
-    return `${fieldName} needs to be at least three characters`;
-  }
-  return '';
-};
+function FormVanilla({ values: propValues, validate }) {
+  const [values, setValues] = React.useState(propValues);
 
-const emailValidation = email => {
-  if (
-    /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(
-      email,
-    )
-  ) {
-    return '';
-  }
-  if (email.trim() === '') {
-    return 'Email is required';
-  }
-  return 'Please enter a valid email';
-};
+  const [errors, setErrors] = React.useState({});
 
-const ageValidation = age => {
-  if (age === '') {
-    return 'Age is required';
-  }
-  if (age < 18) {
-    return 'Age must be at least 18';
-  }
-  if (age > 99) {
-    return 'Age must be under 99';
-  }
-  return '';
-};
-
-const validate = {
-  firstName: name => nameValidation('First Name', name),
-  lastName: name => nameValidation('Last Name', name),
-  email: emailValidation,
-  age: ageValidation,
-};
-
-const defaultFormValues = {
-  firstName: '',
-  lastName: '',
-  email: '',
-  age: 0,
-};
-
-function FormVanilla() {
-  const [values, setValues] = React.useState(defaultFormValues);
-
-  const [errors, setErrors] = React.useState(
-    Object.keys(defaultFormValues).reduce(
-      (acc, key) => ({
-        ...acc,
-        [key]: '',
-      }),
-      {},
-    ),
-  );
-
-  const [touched, setTouched] = React.useState(
-    Object.keys(defaultFormValues).reduce(
-      (acc, key) => ({
-        ...acc,
-        [key]: false,
-      }),
-      {},
-    ),
-  );
+  const [touched, setTouched] = React.useState({});
 
   // change event handler
   const handleChange = evt => {
@@ -95,29 +25,41 @@ function FormVanilla() {
     // was the field modified
     setTouched({
       ...touched,
-      [name]: value !== defaultFormValues[name],
+      [name]: true,
     });
   };
 
   const handleBlur = evt => {
     const { name, value } = evt.target;
-    // validate the field if the value has been touched
+
+    // remove whatever error was there previously
+    const { [name]: removedError, ...rest } = errors;
+
+    // check for a new error
+    const error = validate[name](value);
+
+    // // validate the field if the value has been touched
     setErrors({
-      ...errors,
-      [name]: touched[name] && validate[name](value),
+      ...rest,
+      ...(error && { [name]: touched[name] && error }),
     });
   };
 
   // form submit handler
   const handleSubmit = evt => {
     evt.preventDefault();
-    if (Object.values(errors).every(v => v === '')) {
-      alert(JSON.stringify(values));
+    if (
+      !Object.values(errors).length && // errors object is empty
+      Object.values(touched).length === Object.values(values).length && // all fields were touched
+      Object.values(touched).every(t => t === true) // every touched field is true
+    ) {
+      alert(JSON.stringify(values, null, 2));
     }
   };
 
   return (
     <>
+      <h2>Form validated manually</h2>
       <Form
         handleSubmit={handleSubmit}
         handleChange={handleChange}
