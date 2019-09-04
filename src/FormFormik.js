@@ -15,12 +15,12 @@ function MyForm({
     <>
       <h2>Form validated using Formik</h2>
       <Form
-        values={values}
+        handleBlur={handleBlur}
+        handleChange={handleChange}
+        handleSubmit={handleSubmit}
         errors={errors}
         touched={touched}
-        handleChange={handleChange}
-        handleBlur={handleBlur}
-        handleSubmit={handleSubmit}
+        values={values}
       />
       <Debug values={values} errors={errors} touched={touched} />
     </>
@@ -28,8 +28,10 @@ function MyForm({
 }
 
 const FormFormik = withFormik({
-  mapPropsToValues: ({ values }) => {
-    return { ...values };
+  mapPropsToValues: ({ initialValues }) => {
+    return {
+      ...initialValues,
+    };
   },
 
   validate: (values, { validate }) =>
