@@ -13,7 +13,7 @@ const nameValidation = (fieldName, fieldValue) => {
   if (/[^a-zA-Z -]/.test(fieldValue)) {
     return 'Invalid characters';
   }
-  if (fieldValue.length < 3) {
+  if (fieldValue.trim().length < 3) {
     return `${fieldName} needs to be at least three characters`;
   }
   return null;
